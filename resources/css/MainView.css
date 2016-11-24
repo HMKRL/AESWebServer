@@ -1,0 +1,17 @@
+#bt {
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+    -fx-font-family: "Courier New";
+    -fx-font-weight: bold;
+	-fx-border-color: #000000;
+	-fx-border-radius: 5;
+    -fx-background-color: #9d9dff;
+}
+
+#bt:hover {
+    -fx-background-color: #a45fcf;
+}
+
+#send {
+
+}
