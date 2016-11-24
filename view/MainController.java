@@ -22,14 +22,16 @@ public class MainController {
 	}
 	
 	@FXML
-	private Button bt;
+	private TextArea recieved;
 	
 	@FXML
-	private TextArea toSend;
+	private Button refresh;
 	
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
-	    workQueue.add(toSend.getText());
-	    toSend.clear();
+		if(!workQueue.isEmpty()) {
+			recieved.setText(workQueue.peek());
+			workQueue.remove();
+		}
 	}
 }

@@ -1,12 +1,13 @@
 package network;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
 public class Server extends Thread
@@ -14,6 +15,7 @@ public class Server extends Thread
 	private ServerSocket m_serverSocket;
 	private Socket m_socket;
 	private BlockingQueue<String> taskQueue;
+	private char[] cipherText;
 
 	public Server(int port, BlockingQueue<String> q)
 	{
@@ -44,10 +46,6 @@ public class Server extends Thread
 				reader = new BufferedReader(new InputStreamReader(m_socket.getInputStream()));
 				
 				String str;
-				//while(!reader.ready());
-				/*while(reader.ready()) {
-					System.out.print((char)reader.read());
-				}*/
 				str = reader.readLine();
 				System.out.println(str);
 				if(str.substring(0, 3).equals("GET")) {
@@ -59,39 +57,44 @@ public class Server extends Thread
 				}
 				
 				else if(str.substring(0, 4).equals("POST")) {
-					int cnt = 0;
-					while(cnt == 0) {
+					Boolean flag = true;
+					while(flag) {
 						str = reader.readLine();
 						System.out.println(str);
 						if(str.isEmpty()) {
-							cnt++;
-							char c;
-							while(true) {
-								c = (char)reader.read();
-								System.out.print(c);
-								if(c == '\r' || c == '\n') break;
-							}
+								str = reader.readLine();
+								System.out.println(str);
+								str = reader.readLine();
+								System.out.println(Integer.parseInt(str));
+								cipherText = new char[Integer.parseInt(str)];
+								reader.read(cipherText, 0, Integer.parseInt(str));
+								for(char element:cipherText) System.out.print(element);
+								System.out.println("");
+								System.out.printf("recieved %d chars\n", cipherText.length);
+								taskQueue.add(Arrays.toString(cipherText).replaceAll(", ", "").substring(1, cipherText.length + 1));
+								flag = false;
 						}
 					}
 					System.out.println("Read finished");
 				}
 				
-				writer.println("HTTP/1.1 200 OK\n");
-				FileReader index = new FileReader("src/index.html");
+				writer.print("HTTP/1.1 200 OK\r\n");
+				writer.print("\r\n");
+				InputStream in = getClass().getResourceAsStream("/resources/index.html");
+				BufferedReader index = new BufferedReader(new InputStreamReader(in));
 				
-				while(index.ready()) {
-					char x = (char)index.read();
-					writer.print(x);
+				while((str = index.readLine()) != null) {
+					writer.print(str + "\r\n");
 				}
 				writer.println("");
 				
 				writer.flush();
 				
-				while(!taskQueue.isEmpty()) {
+				/*while(!taskQueue.isEmpty()) {
 					writer.print(taskQueue.peek());
 					taskQueue.remove();
 					writer.println("");
-				}
+				}*/
 				
 				index.close();
 				reader.close();

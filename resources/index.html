@@ -182,7 +182,7 @@
 					var keyString = 'Balwisyall_Nescell_gungnir_tron!';
 					var ivString = 'thisisjusteasyIV';
 					var plainText = document.getElementById('text').value;
-					var cipherText = "cipher: ";
+					var cipherText = "";
 
 					/*set key and IV*/
 					for (var i = 0; i < 32; i++) {
@@ -248,7 +248,9 @@
 					}
 					var request = new XMLHttpRequest();
 					request.open('POST', 'http://127.0.0.1:8080', true)
-					request.send(cipherText.toString());
+					console.log(cipherText.toString());
+					console.log(cipherText.length);
+					request.send(Mode + '\r\n' + cipherText.length + '\r\n' + cipherText.toString() + '\r\n\r\n');
 				}
 				</script>
 
