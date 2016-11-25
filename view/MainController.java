@@ -1,6 +1,7 @@
 package view;
 
 import java.util.concurrent.BlockingQueue;
+import network.AESUtility;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javafx.event.ActionEvent;
@@ -30,7 +31,9 @@ public class MainController {
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
 		if(!workQueue.isEmpty()) {
-			recieved.setText(workQueue.peek());
+			System.out.println();
+			AESUtility cipher = new AESUtility();
+			recieved.setText(cipher.Decrypt("Balwisyall_Nescell_gungnir_tron!", "thisisjusteasyIV", "ECB", workQueue.peek().toCharArray()));
 			workQueue.remove();
 		}
 	}

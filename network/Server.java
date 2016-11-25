@@ -62,17 +62,17 @@ public class Server extends Thread
 						str = reader.readLine();
 						System.out.println(str);
 						if(str.isEmpty()) {
-								str = reader.readLine();
-								System.out.println(str);
-								str = reader.readLine();
-								System.out.println(Integer.parseInt(str));
-								cipherText = new char[Integer.parseInt(str)];
-								reader.read(cipherText, 0, Integer.parseInt(str));
-								for(char element:cipherText) System.out.print(element);
-								System.out.println("");
-								System.out.printf("recieved %d chars\n", cipherText.length);
-								taskQueue.add(Arrays.toString(cipherText).replaceAll(", ", "").substring(1, cipherText.length + 1));
-								flag = false;
+							str = reader.readLine();
+							System.out.println(str);
+							str = reader.readLine();
+							System.out.println(Integer.parseInt(str));
+							cipherText = new char[Integer.parseInt(str)];
+							reader.read(cipherText, 0, Integer.parseInt(str));
+							for(char element:cipherText) System.out.print(element);
+							System.out.println("");
+							System.out.printf("recieved %d chars\n", cipherText.length);
+							taskQueue.add(Arrays.toString(cipherText).replaceAll(", ", "").substring(1, cipherText.length + 1));
+							flag = false;
 						}
 					}
 					System.out.println("Read finished");
@@ -89,12 +89,6 @@ public class Server extends Thread
 				writer.println("");
 				
 				writer.flush();
-				
-				/*while(!taskQueue.isEmpty()) {
-					writer.print(taskQueue.peek());
-					taskQueue.remove();
-					writer.println("");
-				}*/
 				
 				index.close();
 				reader.close();
