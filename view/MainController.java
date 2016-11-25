@@ -14,16 +14,14 @@ public class MainController {
 	private BlockingQueue<String> workQueue = new LinkedBlockingQueue<String>();
 	private Server sender = new Server(8080, workQueue);
 	
-	public MainController() {
-		sender.start();
-	}
-	
-	public void stop() {
-		sender.sendStopSignal();
-	}
+	@FXML
+	private TextArea decrypted;
 	
 	@FXML
-	private TextArea recieved;
+	private TextArea header;
+
+	@FXML
+	private TextArea body;
 	
 	@FXML
 	private Button refresh;
@@ -31,10 +29,18 @@ public class MainController {
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
 		if(!workQueue.isEmpty()) {
-			System.out.println();
 			AESUtility cipher = new AESUtility();
-			recieved.setText(cipher.Decrypt("Balwisyall_Nescell_gungnir_tron!", "thisisjusteasyIV", "ECB", workQueue.peek().toCharArray()));
-			workQueue.remove();
+			decrypted.setText(cipher.Decrypt("Balwisyall_Nescell_gungnir_tron!", "thisisjusteasyIV", workQueue.remove(), workQueue.remove().toCharArray()));
+			header.setText(workQueue.remove());
+			body.setText(workQueue.remove());
 		}
+	}
+	
+	public MainController() {
+		sender.start();
+	}
+	
+	public void stop() {
+		sender.requestStop();
 	}
 }

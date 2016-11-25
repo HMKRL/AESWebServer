@@ -1,17 +1,65 @@
-#bt {
+.button {
     -fx-font-size: 24px;
     -fx-text-fill: white;
     -fx-font-family: "Courier New";
     -fx-font-weight: bold;
-	-fx-border-color: #000000;
+	-fx-border-color: transparent;
 	-fx-border-radius: 5;
-    -fx-background-color: #9d9dff;
-}
-
-#bt:hover {
     -fx-background-color: #a45fcf;
 }
 
-#send {
+.button:hover {
+    -fx-background-color: #9d9dff;
+}
+
+.text-area {
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .content {
+	-fx-background-color: #303030;	
+	-fx-text-fill: white;
+}
+
+.text {
+	-fx-text-fill: white;
+}
+
+.text-area .scroll-bar:horizontal .track,
+.text-area .scroll-bar:vertical .track{
+	-fx-background-color:transparent;
+	-fx-border-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-border-radius:2em;
+}
+
+.text-area .scroll-bar:horizontal .increment-button ,
+.text-area .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 0 10 0;
 
 }
+
+.text-area .scroll-bar:vertical .increment-button ,
+.text-area .scroll-bar:vertical .decrement-button {
+
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 10 0 0;
+
+}
+
+.text-area  .scroll-bar .increment-arrow,
+.text-area  .scroll-bar .decrement-arrow {
+	-fx-shape: " ";	
+	-fx-padding:0;
+}
+
+.text-area .scroll-bar:horizontal .thumb,
+.text-area .scroll-bar:vertical .thumb {
+    -fx-background-color:derive(black,90%);
+	-fx-background-insets: 2, 0, 0;
+	-fx-background-radius: 2em;
+}
+

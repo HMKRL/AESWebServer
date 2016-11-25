@@ -17,7 +17,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("FX Practice");
+		this.primaryStage.setTitle("Secured socket message");
 		
 		initRootLayout();
 	}
@@ -37,6 +37,7 @@ public class Main extends Application {
 			Scene scene = new Scene(rootLayout);
 			scene.getStylesheets().add(Main.class.getResource("resources/css/MainView.css").toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.setResizable(false);
 			primaryStage.show();
 			
 		} catch(IOException e) {
@@ -47,5 +48,4 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
 }

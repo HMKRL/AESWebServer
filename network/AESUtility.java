@@ -1,7 +1,5 @@
 package network;
 
-import java.util.Arrays;
-
 public class AESUtility {
 	private char[] key;
 	private char[] iv;
@@ -55,32 +53,33 @@ public class AESUtility {
 
 			if(Mode.equals("ECB")) {
 				AES_Decrypt(block);
-				System.out.println(new String(block));
 			}
-			else if(Mode == "CBC") {
-				for (int i = 0; i < 16; i++) {
-					block[i] ^= iv[i];
-				}
+			else if(Mode.equals("CBC")) {
+				char[] newiv = block.clone();
 				AES_Decrypt(block);
-				iv = block.clone();
-			}
-			else if(Mode == "CFB") {
-				AES_Decrypt(iv);
 				for (int i = 0; i < 16; i++) {
 					block[i] ^= iv[i];
 				}
-				iv = block.clone();
+				iv = newiv;
+			}
+			else if(Mode.equals("CFB")) {
+				AES_Encrypt(iv);
+				char[] newiv = block.clone();
+				for (int i = 0; i < 16; i++) {
+					block[i] ^= iv[i];
+				}
+				iv = newiv;
 			}
 			else if(Mode == "OFB") {
-				AES_Decrypt(iv);
-				char[] temp = iv.clone();
+				AES_Encrypt(iv);
+				char[] newiv = iv.clone();
 				for (int i = 0; i < 16; i++) {
 					block[i] ^= iv[i];
 				}
-				iv = temp.clone();
+				iv = newiv;
 			}
 			else {
-				AES_Decrypt(iv);
+				AES_Encrypt(iv);
 				for (int i = 0; i < 16; i++) {
 					block[i] ^= iv[i];
 				}
@@ -91,10 +90,8 @@ public class AESUtility {
 				}
 				iv[0] = tmp;
 			}
-			plainText = plainText + new String(block);
-
+			plainText += new String(block);
 		}
-		
 		return plainText;
 	}
 
@@ -216,7 +213,7 @@ public class AESUtility {
 			AES_AddRoundKey(block, rkey);
 		}
 		for(int k = 0;k < 16;k++) {
-			rkey[k] = key[i + k]; 
+			rkey[k] = key[l - 16 + k]; 
 		}
 		AES_SubBytes(block, AES_Sbox);
 		AES_ShiftRows(block, AES_ShiftRowTab);

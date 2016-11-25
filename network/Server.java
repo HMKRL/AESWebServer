@@ -1,4 +1,4 @@
-package network;
+package network;	
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
@@ -16,26 +17,36 @@ public class Server extends Thread
 	private Socket m_socket;
 	private BlockingQueue<String> taskQueue;
 	private char[] cipherText;
+	private Boolean running;
 
 	public Server(int port, BlockingQueue<String> q)
 	{
 		try
 		{
 			m_serverSocket = new ServerSocket(port);
+			m_serverSocket.setSoTimeout(2000);
 			taskQueue = q;
+			running = true;
 		}
-		catch (IOException e)
-		{
+		catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
 	@Override
 	public void run() {
-		while(true) {
+		while(running) {
 			try {
 				System.out.println("Wainting for connection......");
-				m_socket = m_serverSocket.accept();
+				while(true) {
+					try {
+						m_socket = m_serverSocket.accept();
+						break;
+					}
+					catch(SocketException se){
+						System.out.println(se.getMessage());
+					}
+				}
 				System.out.println("Connection established!");
 
 				PrintWriter writer;
@@ -46,8 +57,10 @@ public class Server extends Thread
 				reader = new BufferedReader(new InputStreamReader(m_socket.getInputStream()));
 				
 				String str;
+				while(!reader.ready() && running);
+				if(!running) break;
+				
 				str = reader.readLine();
-				System.out.println(str);
 				if(str.substring(0, 3).equals("GET")) {
 					while(true) {
 						str = reader.readLine();
@@ -58,24 +71,26 @@ public class Server extends Thread
 				
 				else if(str.substring(0, 4).equals("POST")) {
 					Boolean flag = true;
+					String temp = "" + str + '\n', body = "";
 					while(flag) {
 						str = reader.readLine();
-						System.out.println(str);
+						temp += str + '\n';
 						if(str.isEmpty()) {
 							str = reader.readLine();
-							System.out.println(str);
+							taskQueue.add(str);
+							body += str + '\n';
 							str = reader.readLine();
-							System.out.println(Integer.parseInt(str));
-							cipherText = new char[Integer.parseInt(str)];
-							reader.read(cipherText, 0, Integer.parseInt(str));
-							for(char element:cipherText) System.out.print(element);
-							System.out.println("");
-							System.out.printf("recieved %d chars\n", cipherText.length);
+							body += str + '\n';
+							int recievedLength = Integer.parseInt(str);
+							cipherText = new char[recievedLength];
+							reader.read(cipherText, 0, recievedLength);
+							body += new String(cipherText);
 							taskQueue.add(Arrays.toString(cipherText).replaceAll(", ", "").substring(1, cipherText.length + 1));
+							taskQueue.add(temp);
+							taskQueue.add(body);
 							flag = false;
 						}
 					}
-					System.out.println("Read finished");
 				}
 				
 				writer.print("HTTP/1.1 200 OK\r\n");
@@ -99,14 +114,15 @@ public class Server extends Thread
 				System.out.println(e.getMessage());
 			}
 		}
-	}
-	
-	public void sendStopSignal() {
 		try {
-			m_socket.close();
+			m_serverSocket.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void requestStop() {
+		running = false;
 	}
 }

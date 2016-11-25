@@ -248,9 +248,8 @@
 					}
 					var request = new XMLHttpRequest();
 					request.open('POST', 'http://127.0.0.1:8080', true)
-					console.log(cipherText.toString());
-					console.log(cipherText.length);
 					request.send(Mode + '\r\n' + cipherText.length + '\r\n' + cipherText.toString() + '\r\n\r\n');
+					document.getElementById('text').value = "";
 				}
 				</script>
 
@@ -286,6 +285,10 @@
 					#input {
 						width: 60%;
 						float: right;
+					}
+					#text {
+						background-color: black;
+						color: white;
 					}
 				</style>
 			</head>
